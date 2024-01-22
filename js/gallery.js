@@ -88,41 +88,29 @@ const images = [
     gallery.innerHTML = galleryItems;
   }
   
-  function openModal(imageSource) {
-    modalImage.src = imageSource;
-    overlay.classList.add('visible');
-    document.body.style.overflow = 'hidden';
-  }
-  
-  function closeModal() {
-    overlay.classList.remove('visible');
-    document.body.style.overflow = '';
-  }
-  
   function handleGalleryClick(event) {
     event.preventDefault();
-    if (event.target.nodeName !== 'IMG') {
-        return;
-    }
 
-    const largeImageSource = event.target.dataset.source;
-    const lightbox = basicLightbox.create(`
-        <img src="${largeImageSource}" width="800" height="600">
-    `);
-    lightbox.show();
+    const isImageElement = event.target.nodeName === 'IMG';
+    const isGalleryImage = event.target.classList.contains('gallery-image');
+
+    if (isImageElement && isGalleryImage) {
+        const largeImageSource = event.target.dataset.source;
+
+        const lightbox = basicLightbox.create(`
+            <img src="${largeImageSource}" width="800" height="600">
+        `, {
+            onShow: () => {
+                document.body.style.overflow = 'hidden';
+            },
+            onClose: () => {
+                document.body.style.overflow = '';
+            },
+        });
+
+        lightbox.show();
+    }
 }
-  
-  function handleOverlayClick(event) {
-    if (event.target === overlay) {
-      closeModal();
-    }
-  }
-  
-  function handleKeyPress(event) {
-    if (event.key === 'Escape') {
-      closeModal();
-    }
-  }
   
   renderGallery();
   gallery.addEventListener('click', handleGalleryClick);
