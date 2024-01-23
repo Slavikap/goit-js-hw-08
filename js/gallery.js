@@ -102,12 +102,13 @@ const images = [
         `, {
             onShow: () => {
                 document.body.style.overflow = 'hidden';
+                document.addEventListener('keydown', handleKeyPress);
             },
             onClose: () => {
                 document.body.style.overflow = '';
+                document.removeEventListener('keydown', handleKeyPress);
             },
         });
-
         lightbox.show();
     }
 }
