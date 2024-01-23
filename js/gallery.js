@@ -102,11 +102,11 @@ const images = [
         `, {
             onShow: () => {
                 document.body.style.overflow = 'hidden';
-                document.addEventListener('keydown', handleKeyPress);
+                document.addEventListener('keydown', handleGalleryClick);
             },
             onClose: () => {
                 document.body.style.overflow = '';
-                document.removeEventListener('keydown', handleKeyPress);
+                document.removeEventListener('keydown', handleGalleryClick);
             },
         });
         lightbox.show();
@@ -115,6 +115,4 @@ const images = [
   
   renderGallery();
   gallery.addEventListener('click', handleGalleryClick);
-  overlay.addEventListener('click', handleOverlayClick);
-  document.addEventListener('keydown', handleKeyPress);
   
