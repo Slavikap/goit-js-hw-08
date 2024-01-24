@@ -64,55 +64,41 @@ const images = [
     },
   ];
   
-  const gallery = document.querySelector('.gallery');
-  const overlay = document.querySelector('.overlay');
-  const modalImage = document.querySelector('.modal-image');
-  
-  function createGalleryItem({ preview, original, description }) {
-    return `
-      <li class="gallery-item">
-        <a class="gallery-link" href="${original}">
-          <img
-            class="gallery-image"
-            src="${preview}"
-            data-source="${original}"
-            alt="${description}"
-          />
-        </a>
-      </li>
-    `;
+  const gallery = document.querySelector(".gallery");
+  let galleryItems = "";
+  images.map(({ original, description, preview }) => {
+    galleryItems += `<li class="gallery-item">
+      <a class="gallery-link" href="${original}" onclick="event.preventDefault();">
+        <img
+          class="gallery-image"
+          src="${preview}"
+          data-source="${original}"
+          alt="${description}"
+          width="360"
+          height="200"
+        />
+      </a>
+    </li>`;
+  });
+gallery.innerHTML = galleryItems;
+gallery.addEventListener("click", (e) => {
+  if (e.target.nodeName !== "IMG") {
+    return;
   }
-  
-  function renderGallery() {
-    const galleryItems = images.map(createGalleryItem).join('');
-    gallery.innerHTML = galleryItems;
+
+  function handleKeyPress(e) {
+    e.key === "Escape" ? instance.close() : null;
   }
-  
-  function handleGalleryClick(event) {
-    event.preventDefault();
-
-    const isImageElement = event.target.nodeName === 'IMG';
-    const isGalleryImage = event.target.classList.contains('gallery-image');
-
-    if (isImageElement && isGalleryImage) {
-        const largeImageSource = event.target.dataset.source;
-
-        const lightbox = basicLightbox.create(`
-            <img src="${largeImageSource}" width="800" height="600">
-        `, {
-            onShow: () => {
-                document.body.style.overflow = 'hidden';
-                document.addEventListener('keydown', handleGalleryClick);
-            },
-            onClose: () => {
-                document.body.style.overflow = '';
-                document.removeEventListener('keydown', handleGalleryClick);
-            },
-        });
-        lightbox.show();
+  const instance = basicLightbox.create(
+    `<img src="${e.target.dataset.source}">`,
+    {
+      onShow: () => {
+        document.addEventListener("keydown", handleKeyPress,);
+      },
+      onClose: () => {
+        document.removeEventListener("keydown", handleKeyPress,);
+      },
     }
-}
-  
-  renderGallery();
-  gallery.addEventListener('click', handleGalleryClick);
-  
+  );
+  instance.show();
+});
